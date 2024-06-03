@@ -147,7 +147,7 @@ def run_simulation(scenario: str, screen: pygame.Surface, font: pygame.font.Font
         for i in range(ITERATIONS):
             env.run(until=i + 1)
             visualize_iteration(screen, font, coworking_space, sim, i, 5 + i)
-            
+            handle_pygame_events()
             pygame.time.wait(200)  # Add 0.2 second delay for each iteration
 
         served_students += coworking_space.served_students
@@ -273,3 +273,10 @@ def visualize_results(avg_served: float, avg_unserved: float, coworking_space: C
         clock.tick(60)
 
     pygame.quit()
+
+def handle_pygame_events():
+    """Handle Pygame events to prevent the application from becoming unresponsive."""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
