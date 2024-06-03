@@ -122,6 +122,42 @@ def student_arrival(env: simpy.Environment, coworking_space: CoworkingSpace, sce
         yield env.timeout(1)
         env.process(coworking_space.update_stays())
 
+# Run simulation
+
+
+def run_simulation(scenario: str, screen: pygame.Surface, font: pygame.font.Font) -> tuple:
+    """Run the coworking space simulation and return average results.
+
+    Args:
+        scenario (str): The distribution scenario ('left', 'right', 'normal').
+        screen (pygame.Surface): The Pygame screen object for visualization.
+        font (pygame.font.Font): The Pygame font object for text rendering.
+
+    Returns:
+        tuple: Average served students, average unserved students, and coworking space object.
+    """
+    served_students = 0
+    unserved_students = 0
+
+    for sim in range(SIMULATIONS):
+        env = simpy.Environment()
+        coworking_space = CoworkingSpace(env)
+        env.process(student_arrival(env, coworking_space, scenario))
+
+        for i in range(ITERATIONS):
+            env.run(until=i + 1)
+            visualize_iteration(screen, font, coworking_space, sim, i, 5 + i)
+            
+            pygame.time.wait(200)  # Add 0.2 second delay for each iteration
+
+        served_students += coworking_space.served_students
+        unserved_students += coworking_space.unserved_students
+
+    avg_served = served_students / SIMULATIONS
+    avg_unserved = unserved_students / SIMULATIONS
+    return avg_served, avg_unserved, coworking_space
+
+
     
 # Visualization with Pygame
 def draw_grid(screen: pygame.Surface, container: simpy.Container, x_offset: int, y_offset: int, rows: int, cols: int, cell_size: int):
