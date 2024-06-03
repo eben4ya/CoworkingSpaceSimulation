@@ -123,6 +123,26 @@ def student_arrival(env: simpy.Environment, coworking_space: CoworkingSpace, sce
         env.process(coworking_space.update_stays())
 
     
+# Visualization with Pygame
+def draw_grid(screen: pygame.Surface, container: simpy.Container, x_offset: int, y_offset: int, rows: int, cols: int, cell_size: int):
+    """Draw a grid representing the container's occupancy.
 
+    Args:
+        screen (pygame.Surface): The Pygame screen object for visualization.
+        container (simpy.Container): The container object to visualize.
+        x_offset (int): The x-offset of the grid.
+        y_offset (int): The y-offset of the grid.
+        rows (int): The number of rows in the grid.
+        cols (int): The number of columns in the grid.
+        cell_size (int): The size of each cell in the grid.
+    """
+    for i in range(rows):
+        for j in range(cols):
+            rect = pygame.Rect(x_offset + j * cell_size,
+                               y_offset + i * cell_size, cell_size, cell_size)
+            color = (0, 255, 0) if i * cols + \
+                j < container.level else (30, 30, 30)
+            pygame.draw.rect(screen, color, rect,
+                             0 if color == (0, 255, 0) else 1)
 
 
