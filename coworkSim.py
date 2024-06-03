@@ -26,6 +26,72 @@ def normal_distribution() -> float:
     """Generate a random number with a normal distribution."""
     return np.abs(np.random.normal(10, 4))  # mean=10, std=4
 
+class CoworkingSpace:
+    def __init__(self, env: simpy.Environment):
+        self.env = env
+        self.container1 = simpy.Container(env, capacity=CAPACITY1, init=0)
+        self.container2 = simpy.Container(env, capacity=CAPACITY2, init=0)
+        self.container3 = simpy.Container(env, capacity=CAPACITY3, init=0)
+        self.unserved_students = 0
+        self.served_students = 0
+        self.arrivals = 0
+        self.departures = 0
+        self.stay_durations = []
+        self.stay_info = []  # New list to keep track of stay information
+
+    def process_students(self, num_students: int, stay_durations: list):
+        """Process student arrivals and departures in the coworking space.
+
+        Args:
+            num_students (int): Number of students arriving.
+            stay_durations (int): Duration of stay for each student.
+        """
+        served = 0
+        unserved = 0
+        self.arrivals = num_students
+        self.stay_durations = stay_durations
+
+        containers = [self.container1, self.container2, self.container3]
+        capacities = [CAPACITY1, CAPACITY2, CAPACITY3]
+
+        # Student arrival
+        for stay_duration in stay_durations:
+            container_indices = list(range(len(containers)))
+            random.shuffle(container_indices)
+            placed = False
+
+            for index in container_indices:
+                if containers[index].level < capacities[index]:
+                    yield containers[index].put(1)
+                    served += 1
+                    placed = True
+                    self.stay_info.append((containers[index], stay_duration))
+                    break
+
+            if not placed:
+                unserved += 1
+
+        self.served_students += served
+        self.unserved_students += unserved
+
+    def update_stays(self):
+        """Update the stay durations and process student departures."""
+        self.stay_info = [(container, stay_duration - 1)
+                          for container, stay_duration in self.stay_info]
+
+        # Remove students whose stay duration is over
+        self.departures = 0
+        for container, stay_duration in self.stay_info:
+            if stay_duration <= 0:
+                yield container.get(1)
+                self.departures += 1
+
+        self.stay_info = [(container, stay_duration) for container,
+                          stay_duration in self.stay_info if stay_duration > 0]
+        
+
+
+
 # Modify the student_arrival function to update stays each iteration
 def student_arrival(env: simpy.Environment, coworking_space: CoworkingSpace, scenario: str):
     """Simulate student arrivals based on the given scenario.
