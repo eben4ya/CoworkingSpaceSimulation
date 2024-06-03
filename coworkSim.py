@@ -12,8 +12,6 @@ ITERATIONS = 17  # 06.00 - 22.00
 SIMULATIONS = 15
 
 # Define distributions for scenarios
-
-
 def skewed_left() -> float:
     """Generate a random number with a left-skewed distribution."""
     return np.random.beta(5, 2) * 20
@@ -26,5 +24,7 @@ def skewed_right() -> float:
 
 def normal_distribution() -> float:
     """Generate a random number with a normal distribution."""
-    return np.abs(np.random.normal(10, 4)) # mean=10, std=4
+    return np.abs(np.random.normal(10, 4))  # mean=10, std=4
+
+
 
