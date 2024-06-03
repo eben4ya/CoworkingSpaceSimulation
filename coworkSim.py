@@ -207,3 +207,33 @@ def visualize_iteration(screen: pygame.Surface, font: pygame.font.Font, coworkin
     screen.blit(text_unserved, (525, 400))
 
     pygame.display.flip()
+
+def visualize_results(avg_served: float, avg_unserved: float, coworking_space: CoworkingSpace):
+    """Visualize the results of the simulation.
+
+    Args:
+        avg_served (float): Average number of served students.
+        avg_unserved (float): Average number of unserved students.
+        coworking_space (CoworkingSpace): The coworking space object.
+    """
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption('Coworking Space Simulation')
+    # font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, 36)
+
+    avg_text = font.render(
+        f'Avg Served: {avg_served:.2f}, Avg Unserved: {avg_unserved:.2f}', True, (255, 255, 255))
+    screen.blit(avg_text, (100, 50))
+    pygame.display.flip()
+
+    clock = pygame.time.Clock()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        clock.tick(60)
+
+    pygame.quit()
