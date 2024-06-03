@@ -26,6 +26,7 @@ def normal_distribution() -> float:
     """Generate a random number with a normal distribution."""
     return np.abs(np.random.normal(10, 4))  # mean=10, std=4
 
+# Define the Environment of CoworkingSpace class
 class CoworkingSpace:
     def __init__(self, env: simpy.Environment):
         self.env = env
@@ -90,8 +91,6 @@ class CoworkingSpace:
                           stay_duration in self.stay_info if stay_duration > 0]
         
 
-
-
 # Modify the student_arrival function to update stays each iteration
 def student_arrival(env: simpy.Environment, coworking_space: CoworkingSpace, scenario: str):
     """Simulate student arrivals based on the given scenario.
@@ -123,8 +122,6 @@ def student_arrival(env: simpy.Environment, coworking_space: CoworkingSpace, sce
         env.process(coworking_space.update_stays())
 
 # Run simulation
-
-
 def run_simulation(scenario: str, screen: pygame.Surface, font: pygame.font.Font) -> tuple:
     """Run the coworking space simulation and return average results.
 
@@ -244,6 +241,7 @@ def visualize_iteration(screen: pygame.Surface, font: pygame.font.Font, coworkin
 
     pygame.display.flip()
 
+# Visualize the avg results
 def visualize_results(avg_served: float, avg_unserved: float, coworking_space: CoworkingSpace):
     """Visualize the results of the simulation.
 
@@ -280,3 +278,21 @@ def handle_pygame_events():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+# Main function
+def main():
+    """Main function to run the coworking space simulation."""
+    scenario = input(
+        "Enter scenario (rarely, normal, capstone): ").strip().lower()
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption('Coworking Space Simulation')
+    font = pygame.font.Font(None, 36)
+
+    avg_served, avg_unserved, coworking_space = run_simulation(
+        scenario, screen, font)
+    visualize_results(avg_served, avg_unserved, coworking_space)
+
+
+if __name__ == "__main__":
+    main()
