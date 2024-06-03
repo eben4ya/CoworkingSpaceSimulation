@@ -146,3 +146,64 @@ def draw_grid(screen: pygame.Surface, container: simpy.Container, x_offset: int,
                              0 if color == (0, 255, 0) else 1)
 
 
+def visualize_iteration(screen: pygame.Surface, font: pygame.font.Font, coworking_space: CoworkingSpace, sim: int, iteration: int, hour: int):
+    """Visualize the current iteration of the simulation.
+
+    Args:
+        screen (pygame.Surface): The Pygame screen object for visualization.
+        font (pygame.font.Font): The Pygame font object for text rendering.
+        coworking_space (CoworkingSpace): The coworking space object.
+        sim (int): The current simulation number.
+        iteration (int): The current iteration number.
+        hour (int): the current hour.
+    """
+    screen.fill((240, 240, 240))
+
+    # Draw containers
+    draw_grid(screen, coworking_space.container1, 100, 175, 5, 9, 20)
+    draw_grid(screen, coworking_space.container2, 350, 175, 4, 5, 20)
+    draw_grid(screen, coworking_space.container3, 520, 175, 2, 5, 20)
+
+    # Display text
+    text_title = font.render(
+        f'Coworking Space DTETI Simulation', True, (30, 30, 30))
+    text_container1 = font.render(
+        f'Container1', True, (30, 30, 30))
+    text_container2 = font.render(
+        f'Container2', True, (30, 30, 30))
+    text_container3 = font.render(
+        f'Container3', True, (30, 30, 30))
+    text_simulation = font.render(
+        f'Simulation: {sim + 1}/{SIMULATIONS}', True, (30, 30, 30))
+    text_iteration = font.render(
+        f'Iteration: {iteration + 1}/{ITERATIONS}', True, (30, 30, 30))
+    text_hours = font.render(
+        f'Hours: {hour + 1}.00', True, (30, 30, 30))
+    text_arrive = font.render(
+        f'arrival: {coworking_space.arrivals}', True, (30, 30, 30)
+    )
+    text_stay = font.render(
+        f'duration: {coworking_space.stay_durations} hours', True, (30, 30, 30)
+    )
+    text_depart = font.render(
+        f'depart: {coworking_space.departures}', True, (30, 30, 30)
+    )
+    text_served = font.render(
+        f'Served: {coworking_space.served_students}', True, (0, 128, 0))
+    text_unserved = font.render(
+        f'Unserved: {coworking_space.unserved_students}', True, (255, 0, 0))
+
+    screen.blit(text_title, (175, 50))
+    screen.blit(text_container1, (100, 125))
+    screen.blit(text_container2, (325, 125))
+    screen.blit(text_container3, (520, 125))
+    screen.blit(text_simulation, (75, 350))
+    screen.blit(text_iteration, (75, 400))
+    screen.blit(text_hours, (315, 350))
+    screen.blit(text_arrive, (315, 400))
+    screen.blit(text_stay, (315, 450))
+    screen.blit(text_depart, (315, 500))
+    screen.blit(text_served, (525, 350))
+    screen.blit(text_unserved, (525, 400))
+
+    pygame.display.flip()
